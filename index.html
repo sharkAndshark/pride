@@ -1,258 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Pride 2022 France</title>
-    <meta name="robots" content="noindex, nofollow" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
-    <link
-      href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css"
-      rel="stylesheet"
-    />
-   <script src="https://js.sentry-cdn.com/9c5feb5b248b49f79a585804c259febc.min.js" crossorigin="anonymous"></script>
-   <link rel="stylesheet" media="screen" type="text/css" href="style.css"/>
-    </head>
-  <body>
-    <div class="sidebar">
-      <div class="heading">
-        <h1>Trouves ta pride</h1>
-      </div>
-      <div id="nom" class="nom"></div>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Pride 2022 France</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://js.sentry-cdn.com/9c5feb5b248b49f79a585804c259febc.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" media="screen" type="text/css" href="style.css" />
+</head>
+
+<body>
+  <div class="sidebar">
+    <div class="heading">
+      <h1>Trouves ta pride</h1>
     </div>
+    <div id="nom" class="nom"></div>
+  </div>
+  <div id="map" class="map"></div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibG91Ym9vdCIsImEiOiJja21nazF1ZXowYTNoMnVtb3V5Mnp0cjFhIn0.AyCpp3azkLdbXa1Rb6VDhA';
 
-    <div id="map" class="map"></div>
-    <script>
-      mapboxgl.accessToken = 'pk.eyJ1IjoibG91Ym9vdCIsImEiOiJja21nazF1ZXowYTNoMnVtb3V5Mnp0cjFhIn0.AyCpp3azkLdbXa1Rb6VDhA';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v10',
+      center: [2.566942, 46.924183],
+      zoom: 5
+    });
 
-      /**
-       * Add the map to the page
-       */
-      const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/light-v10',
-        center: [2.566942,46.924183],
-        zoom: 5
-      });
+    map.on('load', () => {
+      map.loadImage('marker2.png', (error, image) => {
+        map.addImage('custom-marker', image);
+        fetch('villes.json')
+          .then(response => response.json())
+          .then(villes => {
 
-      const villes = {
-        "type": "FeatureCollection",
-        "name": "villes",
-        "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::2154" } },
-        "features": [
-        { "type": "Feature", "properties": { "id": null, "nom": "Paris", "date": "25\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 2.345264434525258, 48.859148980419519 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Rennes", "date": "04\/06\/2022", "site": "https:\/\/iskis.org\/2021\/05\/28\/marche-des-fiertes-appel-a-manifester\/", "heure": null }, "geometry": { "type": "Point", "coordinates": [ -1.674128029031453, 48.11097783209982 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Lille", "date": "04\/06\/2022", "site": "https:\/\/www.lillepride.fr\/", "heure": "14" }, "geometry": { "type": "Point", "coordinates": [ 3.061874845395468, 50.634628396785658 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Lyon", "date": "11\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 4.839300452086881, 45.760232503200299 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Marseille", "date": "02\/07\/2022", "site": "https:\/\/www.pride-marseille.com\/", "heure": null }, "geometry": { "type": "Point", "coordinates": [ 5.377820620686713, 43.297601256374179 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Strasbourg", "date": "18\/06\/2022", "site": "https:\/\/www.facebook.com\/events\/473262477833337?ref=newsfeed", "heure": "14" }, "geometry": { "type": "Point", "coordinates": [ 7.744952853897239, 48.585500379256082 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Metz", "date": "18\/06\/2022", "site": "https:\/\/www.facebook.com\/events\/769630844011386\/?ref=newsfeed", "heure": "15:30" }, "geometry": { "type": "Point", "coordinates": [ 6.175846473115055, 49.119680648292672 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Arras", "date": "11\/06\/2022", "site": "https:\/\/www.facebook.com\/events\/1202748050467920\/?privacy_mutation_token=eyJ0eXBlIjowLCJjcmVhdGlvbl90aW1lIjoxNjUxMTc1NzQ5LCJjYWxsc2l0ZV9pZCI6MzU5MDM2MDAxOTY4NDMyfQ%3D%3D&acontext=%7B%22action_history%22%3A%22null%22%7D", "heure": "14" }, "geometry": { "type": "Point", "coordinates": [ 2.777113956386039, 50.291267506194679 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Rouen", "date": "18\/06\/2022", "site": "https:\/\/www.facebook.com\/fiertescolorees\/", "heure": null }, "geometry": { "type": "Point", "coordinates": [ 1.092451732395512, 49.438454192907727 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Caen", "date": "18\/06\/2022", "site": "https:\/\/www.centrelgbt-normandie.fr\/actions\/lesbian-gay-pride-de-caen\/", "heure": null }, "geometry": { "type": "Point", "coordinates": [ -0.364623910299191, 49.178335136373988 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Alençon", "date": "21\/05\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 0.089462747289449, 48.431170793382194 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Angers", "date": "14\/05\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -0.554400117490489, 47.473576321855063 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Saint-Brieuc", "date": "21\/05\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -2.759860406254079, 48.510793681722312 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Saint-Nazaire", "date": "21\/05\/2022", "site": "https:\/\/queeramann.fr\/pride\/", "heure": "15" }, "geometry": { "type": "Point", "coordinates": [ -2.216173302751074, 47.273734254967152 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "La Rochelle", "date": "04\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -1.149370257135265, 46.161001916754955 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Nantes", "date": "11\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -1.550942506245397, 47.215907009135748 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Tours", "date": "18\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 0.688271871278168, 47.390180158087297 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Laval", "date": "18\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -0.773367092429152, 48.071030409592488 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Le Mans", "date": "02\/07\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 0.198402982257273, 48.00739243724496 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "La Roche-sur-Yon", "date": "24\/09\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -1.427515537904191, 46.670009230699605 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Châlons-en-Champagne", "date": "02\/04\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 4.361817720100225, 48.957285452564385 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Quimper", "date": "02\/07\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -4.10075244729427, 47.995809044304394 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Lorient", "date": "18\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -3.365695595928898, 47.749083399288587 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Bordeaux", "date": "12\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -0.574826411546971, 44.840597595098657 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Toulouse", "date": "02\/07\/2022", "site": "https:\/\/pridetoulouse.com\/", "heure": null }, "geometry": { "type": "Point", "coordinates": [ 1.442740945363862, 43.604516072260104 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Limoges", "date": null, "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 1.262381114865263, 45.834939430512399 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Poitiers", "date": "21\/05\/2022", "site": "https:\/\/www.facebook.com\/centrelgbtidupoitou\/", "heure": null }, "geometry": { "type": "Point", "coordinates": [ 0.341024872318205, 46.581513615916144 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Montpellier", "date": "25\/06\/2022", "site": "https:\/\/www.fiertemontpellierpride.com\/", "heure": null }, "geometry": { "type": "Point", "coordinates": [ 3.876367284758206, 43.608816858362985 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Grenoble", "date": "28\/05\/2022", "site": "https:\/\/www.facebook.com\/GrenoblePride\/", "heure": null }, "geometry": { "type": "Point", "coordinates": [ 5.731591656032847, 45.186368603252276 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Tignes", "date": "17\/03\/2022", "site": "https:\/\/www.tignes.net\/agenda\/evenements\/european-snowpride-gay-pride", "heure": null }, "geometry": { "type": "Point", "coordinates": [ 6.907960176234946, 45.469623395829565 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Vic-en-Bigorre", "date": "09\/04\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 0.054818994632544, 43.386059474442604 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Cherbourg", "date": "09\/04\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -1.623495227777978, 49.642041669932169 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Le Havre", "date": "11\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 0.111978051336914, 49.493479751405239 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Rodez", "date": "21\/05\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 2.573709170081411, 44.352382048358429 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Villefranche-de-Rouergue", "date": "14\/05\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 2.036738343765012, 44.351338503561436 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Orléans", "date": "14\/05\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 1.908475042053928, 47.901913702745155 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Reims", "date": "21\/05\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 4.029927350886019, 49.258572144032797 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Saint-Denis", "date": "21\/05\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 55.448228383573451, -20.87945881473328 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Valence", "date": "21\/05\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 4.892258878698668, 44.933675868339151 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Clermont-Ferrand", "date": "04\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 3.086681300249896, 45.77708353605459 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Nancy", "date": "04\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 6.183810330188964, 48.693900617445536 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "St-Denis", "date": "04\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 2.355693987843335, 48.935643651335532 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Compiègne", "date": "11\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 2.824803636200073, 49.418484202585979 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Mende", "date": "11\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 3.499158890297408, 44.518676311266468 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Ancenis", "date": "18\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -1.179005863419843, 47.365349617078934 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Gap", "date": "18\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 6.082221254939917, 44.561352948780296 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Saint-Quentin", "date": "18\/06\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 3.290021604100351, 49.845881482850487 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Vannes", "date": "09\/08\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -2.758784898717292, 47.658435828974092 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Annecy", "date": "16\/07\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 6.127705270274886, 45.90151759460467 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Épernay", "date": "23\/08\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ 3.956796188975189, 49.043484512838319 ] } },
-{ "type": "Feature", "properties": { "id": null, "nom": "Pau", "date": "24\/09\/2022", "site": null, "heure": null }, "geometry": { "type": "Point", "coordinates": [ -0.369049868417455, 43.295310984557261 ] } }
-]
-      };
+            //magical and  evil... 
+            villes.features.forEach((ville, i) => {
+              ville.properties.id = i;
+            });
 
-      function alphabeticalOrder(villes) {
-        for (const ville of villes) {
-          villes[features][properties][nom].sort(function(a,b) {
-          return a === b ? 0 : a > b ? 1 : -1;
-        })
-      }}
-      console.log(villes)
 
-      /**
-       * Assign a unique id to each ville. You'll use this `id`
-       * later to associate each point on the map with a noms
-       * in the sidebar.
-       */
-       villes.features.forEach((ville, i) => {
-        ville.properties.id = i;
-      });
-
-      /**
-       * Wait until the map loads to make changes to the map.
-       */
-      map.on('load', () => {
-        /**
-         * This is where your '.addLayer()' used to be, instead
-         * add only the source without styling a layer
-         */
-        map.addSource('villes', {
-          'type': 'geojson',
-          'data': villes
-        });
-
-        /**
-         * Add all the things to the page:
-         * - The location nom on the side of the page
-         * - The markers onto the map
-         */
-        buildLocationList(villes);
-        addMarkers();
-      });
-
-      /**
-       * Add a marker to the map for every ville noms.
-       **/
-      function addMarkers() {
-        /* For each feature in the GeoJSON object above: */
-        for (const marker of villes.features) {
-          /* Create a div element for the marker. */
-          const el = document.createElement('div');
-          /* Assign a unique `id` to the marker. */
-          el.id = `marker-${marker.properties.id}`;
-          /* Assign the `marker` class to each marker for styling. */
-          el.className = 'marker';
-
-          /**
-           * Create a marker using the div element
-           * defined above and add it to the map.
-           **/
-          new mapboxgl.Marker(el, { offset: [0, -23] })
-            .setLngLat(marker.geometry.coordinates)
-            .addTo(map);
-
-          /**
-           * Listen to the element and when it is clicked, do three things:
-           * 1. Fly to the point
-           * 2. Close all other popups and display popup for clicked ville
-           * 3. Highlight noms in sidebar (and remove highlight for all other nom)
-           **/
-          el.addEventListener('click', (e) => {
-            /* Fly to the point */
-            flyToville(marker);
-            /* Close all other popups and display popup for clicked ville */
-            createPopUp(marker);
-            /* Highlight noms in sidebar */
-            const activeItem = document.getElementsByClassName('active');
-            e.stopPropagation();
-            if (activeItem[0]) {
-              activeItem[0].classList.remove('active');
-            }
-            const noms = document.getElementById(
-              `noms-${marker.properties.id}`
-            );
-            noms.classList.add('active');
-          });
-        }
-      }
-
-      /**
-       * Add a noms for each ville to the sidebar.
-       **/
-      function buildLocationList(villes) {
-        for (const ville of villes.features) {
-          /* Add a new noms section to the sidebar. */
-          const nom = document.getElementById('nom');
-          const noms = nom.appendChild(document.createElement('div'));
-          /* Assign a unique `id` to the noms. */
-          noms.id = `noms-${ville.properties.id}`;
-          /* Assign the `item` class to each noms for styling. */
-          noms.className = 'item';
-
-          /* Add the link to the individual noms created above. La ou on change le nom */
-          const link = noms.appendChild(document.createElement('a'));
-          link.href = '#';
-          link.className = 'title';
-          link.id = `link-${ville.properties.id}`;
-          link.innerHTML = `${ville.properties.nom}`;
-
-          /* Add details to the individual noms. La ou on change l'date */
-          const details = noms.appendChild(document.createElement('div'));
-          details.innerHTML = `${ville.properties.date}`;
-          
-
-          /**
-           * Listen to the element and when it is clicked, do four things:
-           * 1. Update the `currentFeature` to the ville associated with the clicked link
-           * 2. Fly to the point
-           * 3. Close all other popups and display popup for clicked ville
-           * 4. Highlight noms in sidebar (and remove highlight for all other nom)
-           **/
-          link.addEventListener('click', function () {
-            for (const feature of villes.features) {
-              if (this.id === `link-${feature.properties.id}`) {
-                flyToville(feature);
-                createPopUp(feature);
+            buildLocationList(villes);
+            map.addSource('villes_source', {
+              'type': 'geojson',
+              'data': villes
+            });
+            map.addLayer({
+              'id': 'villes',
+              'type': 'symbol',
+              'source': 'villes_source',
+              'layout': {
+                'icon-image': 'custom-marker',
+                
               }
-            }
-            const activeItem = document.getElementsByClassName('active');
-            if (activeItem[0]) {
-              activeItem[0].classList.remove('active');
-            }
-            this.parentNode.classList.add('active');
-          });
-        }
-      }
+            });
+            map.on('click', 'villes', (e) => {
+              const feature = e.features[0];
+              createPopUp(feature);
+            });
+          }
+          );
+      });
+    });
+    
+    function createPopUp(currentFeature) {
+      const coordinates = currentFeature.geometry.coordinates.slice();
+      const properties = currentFeature.properties;
+      console.log(coordinates);
+      let html = `<h3>${properties.nom}</h3><h4>${properties.date}</h4>
+              <h4><a href="${properties.site}" target="_blank"> Lien </a></h4>`;
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(html)
+        .addTo(map);
+    }
+    function flyToville(currentFeature) {
+      map.flyTo({
+        center: currentFeature.geometry.coordinates,
+        zoom: 10
+      });
+    }
+    function buildLocationList(villes) {
+      for (const ville of villes.features) {
+        /* Add a new noms section to the sidebar. */
+        const nom = document.getElementById('nom');
+        const noms = nom.appendChild(document.createElement('div'));
+        /* Assign a unique `id` to the noms. */
+        noms.id = `noms-${ville.properties.id}`;
+        /* Assign the `item` class to each noms for styling. */
+        noms.className = 'item';
 
-      /**
-       * Use Mapbox GL JS's `flyTo` to move the camera smoothly
-       * a given center point.
-       **/
-      function flyToville(currentFeature) {
-        map.flyTo({
-          center: currentFeature.geometry.coordinates,
-          zoom: 10
+        /* Add the link to the individual noms created above. La ou on change le nom */
+        const link = noms.appendChild(document.createElement('a'));
+        link.href = '#';
+        link.className = 'title';
+        link.id = `link-${ville.properties.id}`;
+        link.innerHTML = `${ville.properties.nom}`;
+
+        /* Add details to the individual noms. La ou on change l'date */
+        const details = noms.appendChild(document.createElement('div'));
+        details.innerHTML = `${ville.properties.date}`;
+
+        link.addEventListener('click', function () {
+          for (const feature of villes.features) {
+            if (this.id === `link-${feature.properties.id}`) {
+              flyToville(feature);
+              createPopUp(feature);
+            }
+          }
         });
       }
-
-      /**
-       * Create a Mapbox GL JS `Popup`. currentFeature.properties.type => pour que ca soit dynamique en fonction d une variable du geojson
-       **/
-      const lien = document.getElementsByClassName('site')
-      function createPopUp(currentFeature) {
-        const popUps = document.getElementsByClassName('mapboxgl-popup');
-        if (popUps[0]) popUps[0].remove();
-        const popup = new mapboxgl.Popup({ closeOnClick: true })
-          .setLngLat(currentFeature.geometry.coordinates)
-          .setHTML(
-            `<h3>${currentFeature.properties.nom}</h3><h4>${currentFeature.properties.date}</h4>
-            <h4><a href="${currentFeature.properties.site}" target="_blank"> Lien </a></h4>`
-          )
-          .addTo(map);
-      }
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>

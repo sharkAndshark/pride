@@ -97,17 +97,9 @@ body {
     border-radius: 0;
   }
 
-  .marker {
-    border: none;
-    cursor: pointer;
-    height: 26px;
-    width: 26px;
-    background-image: url(marker2.png);
-  }
-
   /* Marker tweaks */
   .mapboxgl-popup {
-    padding-bottom: 50px;
+    padding-bottom: 15px;
   }
 
   .mapboxgl-popup-close-button {
